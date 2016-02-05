@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- General stylesheet -->
+    <link rel="stylesheet" type="text/css" 
+          href="http://cdn.cloudwall.me/1.2/general.css" />
+​
+    <!-- Contains Sugar, jQuery, jQuery.my -->
+    <script src="http://cdn.cloudwall.me/1.2/minimal.js"></script>
+​
+    <!-- Contains different rich ui plugins -->
+    <script src="http://cdn.cloudwall.me/1.2/plugins.js"></script>
+  </head>
+  <body>
+    <div id="cw-body">
+      <div id="form" class="p50 w750">
+        <!-- Container for app -->
+
+
+<div id="form">
+ <input type="text" id="name" />
+ <input type="range" id="age" />
+</div>
+
+
+
+      </div>
+    </div>
+  </body>
+  <script>
+
+var data = {
+ name: "Luke Skywalker",
+ age: 60
+};
+
+    $(function(){
+    	var h = $('#template').html();
+
+    	$('#template').html().appendTo('#cw-body');
+
+
+$("#form").my({ui:{
+ "#name": "name",
+ "#age": "age"
+}}, data);
+
+
+    });
+
+
+
+
+
+
+
+  </script>
+
+
+<script type="text/html" id="template">
+    <div data-content="author">xcvxcv</div>
+    <div data-content="date">xcvxcv</div>
+    <div data-content="post"></div>
+</script>
+
+
+</html>
+
+
+
+
+
