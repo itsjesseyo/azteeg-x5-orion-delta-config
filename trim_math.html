@@ -1,68 +1,115 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- General stylesheet -->
-    <link rel="stylesheet" type="text/css" 
-          href="http://cdn.cloudwall.me/1.2/general.css" />
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!-- General stylesheet -->
+		<link rel="stylesheet" type="text/css" 
+					href="http://cdn.cloudwall.me/1.2/general.css" />
 ​
-    <!-- Contains Sugar, jQuery, jQuery.my -->
-    <script src="http://cdn.cloudwall.me/1.2/minimal.js"></script>
+		<!-- Contains Sugar, jQuery, jQuery.my -->
+		<script src="http://cdn.cloudwall.me/1.2/minimal.js"></script>
 ​
-    <!-- Contains different rich ui plugins -->
-    <script src="http://cdn.cloudwall.me/1.2/plugins.js"></script>
-  </head>
-  <body>
-    <div id="cw-body">
-      <div id="form" class="p50 w750">
-        <!-- Container for app -->
+		<!-- Contains different rich ui plugins -->
+		<script src="http://cdn.cloudwall.me/1.2/plugins.js"></script>
+
+		<!-- github as cdn? -->
+		<script src="https://rawgit.com/luxnovalabs/azteeg-x5-orion-delta-config/master/jquery.loadTemplate-1.5.0.min.js"></script>
+
+		<style>
+			input{
+				max-width: 100px;
+			}
+		</style>
+
+		
+	</head>
+	<body>
+		<button id="new_round_button">new round</button>
+		<div id="cw-body">
+			<div id="form" class="p50 w750">
+				<!-- Container for app -->
 
 
-<div id="form">
- <input type="text" id="name" />
- <input type="range" id="age" />
-</div>
-
-
-
-      </div>
-    </div>
-  </body>
-  <script>
-
-var data = {
- name: "Luke Skywalker",
- age: 60
-};
-
-    $(function(){
-    	var h = $('#template').html();
-
-    	$('#template').html().appendTo('#cw-body');
-
-
-$("#form").my({ui:{
- "#name": "name",
- "#age": "age"
-}}, data);
-
-
-    });
+				<div id="form">
+					<input type="text" id="name" />
+					<input type="range" id="age" />
+				</div>
 
 
 
+			</div>
+		</div>
+	</body>
+	<script>
+
+		var Round = function(_index){
+			this.index = _index;
+			this.id = "round_" + this.index; 
+			this.buttonID = "button_" + this.index;
+			this.center = this.x = this.y = this.z = 0;
+			this.offsetX = this.offsetY = this.offsetZ = 0;//we calculate these
+			this.calculateOffsets = function(){
+				this.offsetX = this.center - this.x;
+				this.offsetY = this.center - this.y;
+				this.offsetZ = this.center - this.z;
+			}
+		};
+
+		var rounds = [];
+
+		//init
+		$(function(){
+				rounds.push(new Round(0));
+				Draw();
+
+				$('#new_round_button').click(function(){
+					var length = rounds.length;
+					rounds.push(new Round(length));
+					Draw();
+				})
+
+		});
+
+		function Draw(){
+			//draw elements and populate values
+			$("#cw-body").loadTemplate($("#template"),rounds);
+			//wanna listen to that calculate button click
+			$('.calculate_button').click(function(){
+				//figure out which index we're binding to
+				var index = parseInt($(this).attr('id').split("_")[1]);
+				var round_id = "round_" + index;
+				//get input values
+				var center_value = Number($('#round_'+index + ' > .center_value').val());
+				var x_value = Number($('#round_'+index + ' > .x_value').val());
+				var y_value = Number($('#round_'+index + ' > .y_value').val());
+				var z_value = Number($('#round_'+index + ' > .z_value').val());
+				//set the values
+				rounds[index].center = center_value;
+				rounds[index].x = x_value;
+				rounds[index].y = y_value;
+				rounds[index].z = z_value;
+				rounds[index].calculateOffsets();
+				//redraw the values
+				Draw();
+			});
+		}
 
 
+	</script>
 
 
-  </script>
-
-
-<script type="text/html" id="template">
-    <div data-content="author">xcvxcv</div>
-    <div data-content="date">xcvxcv</div>
-    <div data-content="post"></div>
-</script>
+	<script type="text/html" id="template">
+		<div data-id="id">
+			<input type="text" class="center_value" data-value="center"/>
+			<input type="text" class="x_value" data-value="x"/>
+				<span data-content="offsetX"></span>
+			<input type="text" class="y_value" data-value="y"/>
+				<span data-content="offsetY"></span>
+			<input type="text" class="z_value" data-value="z"/>
+				<span data-content="offsetZ"></span>
+			<button data-id="buttonID" class="calculate_button">calculate</button>
+		</div>
+	</script>
 
 
 </html>
